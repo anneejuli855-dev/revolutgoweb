@@ -154,7 +154,7 @@ function DashboardPage() {
                 Total USD Balance
               </p>
               <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                $24,850.00
+                $2,300,000.00
               </p>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/70">
                 <span className="font-mono tracking-wider">•••• •••• 4821</span>
