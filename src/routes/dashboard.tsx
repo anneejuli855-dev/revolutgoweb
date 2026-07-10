@@ -529,7 +529,8 @@ function OverviewView({
   onWithdraw: () => void;
   onViewAll: () => void;
 }) {
-  const recent = TRANSACTIONS.slice(0, 6);
+  const { items } = useTx();
+  const recent = items.slice(0, 6);
   return (
     <>
       <section>
@@ -559,9 +560,9 @@ function OverviewView({
           <div className="mt-6 flex flex-wrap gap-3">
             <Button
               onClick={onDeposit}
-              className="h-11 rounded-full bg-white px-6 font-semibold text-primary hover:bg-white/90"
+              className="h-11 rounded-full bg-white px-6 font-semibold text-black hover:bg-white/90"
             >
-              <ArrowDownLeft className="mr-1.5 h-4 w-4" />
+              <ArrowDownLeft className="mr-1.5 h-4 w-4 text-black" />
               Deposit
             </Button>
             <Button
