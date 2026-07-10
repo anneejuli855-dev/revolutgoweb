@@ -399,47 +399,117 @@ function DashboardInner() {
       </nav>
 
       {/* Deposit / Withdraw modal */}
-      <Dialog open={modal !== null} onOpenChange={(open) => !open && setModal(null)}>
-        <DialogContent className="rounded-2xl border-white/10 bg-[#111729] text-foreground sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
-              {modal === "deposit" ? "Deposit funds" : "Withdraw funds"}
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              {modal === "deposit"
-                ? "Add money to your checking account."
-                : "Move money out of your checking account."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-2 py-2">
-            <Label htmlFor="amount">Amount (USD)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                $
-              </span>
-              <Input
-                id="amount"
-                type="number"
-                inputMode="decimal"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="h-12 rounded-xl border-white/10 bg-white/5 pl-7 text-lg font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-primary/60"
-                autoFocus
-              />
-            </div>
-          </div>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => setModal(null)} className="hover:bg-white/5">
-              Cancel
-            </Button>
-            <Button
-              onClick={confirmModal}
-              className="rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
-            >
-              Confirm {modal === "deposit" ? "Deposit" : "Withdrawal"}
-            </Button>
-          </DialogFooter>
+      <Dialog open={modal !== null} onOpenChange={(open) => !open && closeModal()}>
+        <DialogContent className="rounded-2xl border-white/10 bg-[#111111] text-foreground sm:max-w-md">
+          {modal === "deposit" ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+                  <Bitcoin className="h-5 w-5" />
+                  Deposit Bitcoin
+                </DialogTitle>
+                <DialogDescription className="text-muted-foreground">
+                  Send BTC to the wallet address below. Funds will appear once the transfer confirms on the network.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label>BTC wallet address</Label>
+                  <div className="flex items-stretch gap-2 rounded-xl border border-white/10 bg-white/5 p-2">
+                    <div className="flex-1 truncate px-2 py-2 font-mono text-sm text-foreground">
+                      {BTC_WALLET_ADDRESS || (
+                        <span className="text-muted-foreground">
+                          Wallet address not set yet
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={copyAddress}
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0 rounded-lg hover:bg-white/10"
+                    >
+                      <Copy className="mr-1.5 h-3.5 w-3.5" />
+                      {copied ? "Copied" : "Copy"}
+                    </Button>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Only send BTC to this address. Sending other assets may result in loss of funds.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Amount (USD equivalent)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      id="amount"
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="0.00"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="h-12 rounded-xl border-white/10 bg-white/5 pl-7 text-lg font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-primary/60"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-2">
+                <Button variant="ghost" onClick={closeModal} className="hover:bg-white/5">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={confirmDeposit}
+                  className="rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  I've sent the BTC
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold">Withdraw funds</DialogTitle>
+                <DialogDescription className="text-muted-foreground">
+                  Move money out of your checking account.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2 py-2">
+                <Label htmlFor="amount">Amount (USD)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    $
+                  </span>
+                  <Input
+                    id="amount"
+                    type="number"
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="h-12 rounded-xl border-white/10 bg-white/5 pl-7 text-lg font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-primary/60"
+                    autoFocus
+                  />
+                </div>
+              </div>
+              <DialogFooter className="gap-2 sm:gap-2">
+                <Button variant="ghost" onClick={closeModal} className="hover:bg-white/5">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={confirmWithdraw}
+                  className="rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Confirm Withdrawal
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
