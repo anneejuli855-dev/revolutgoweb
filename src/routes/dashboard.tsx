@@ -106,6 +106,56 @@ type Card = {
 
 const CARDS_KEY = "novabank.cards.v1";
 const PROFILE_KEY = "novabank.profile.v1";
+const TX_KEY = "novabank.tx.v1";
+
+// TODO: paste your BTC deposit wallet address here.
+const BTC_WALLET_ADDRESS = "";
+
+function formatTodayLabel() {
+  return new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
+
+type TxContextValue = {
+  items: Transaction[];
+  add: (t: Omit<Transaction, "id">) => void;
+};
+const TxContext = createContext<TxContextValue | null>(null);
+
+function TxProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<Transaction[]>(TRANSACTIONS);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(TX_KEY);
+      if (raw) setItems(JSON.parse(raw) as Transaction[]);
+    } catch {
+      // ignore
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    window.localStorage.setItem(TX_KEY, JSON.stringify(items));
+  }, [items, loaded]);
+
+  const add: TxContextValue["add"] = (t) => {
+    setItems((prev) => [{ ...t, id: `tx_${Date.now()}` }, ...prev]);
+  };
+
+  return <TxContext.Provider value={{ items, add }}>{children}</TxContext.Provider>;
+}
+
+function useTx() {
+  const ctx = useContext(TxContext);
+  if (!ctx) throw new Error("useTx must be used inside TxProvider");
+  return ctx;
+}
 
 const DEFAULT_CARDS: Card[] = [
   {
