@@ -107,7 +107,7 @@ function LoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="h-11 w-full rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-[0_10px_30px_-10px_oklch(0.58_0.22_260/0.7)] transition hover:bg-primary/90"
+              className="h-11 w-full rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-[0_10px_30px_-10px_oklch(0_0_0/0.6)] transition hover:bg-primary/90"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
             </Button>

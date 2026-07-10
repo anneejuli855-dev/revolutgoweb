@@ -228,7 +228,7 @@ function DashboardPage() {
                   className={cn(
                     "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-[0_8px_24px_-8px_oklch(0.58_0.22_260/0.6)]"
+                      ? "bg-primary text-primary-foreground shadow-[0_8px_24px_-8px_oklch(1_0_0/0.15)]"
                       : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
                   )}
                 >
@@ -274,7 +274,7 @@ function DashboardPage() {
                 <Icon
                   className={cn(
                     "h-5 w-5",
-                    isActive && "drop-shadow-[0_0_8px_oklch(0.58_0.22_260/0.8)]",
+                    isActive && "drop-shadow-[0_0_8px_oklch(1_0_0/0.6)]",
                   )}
                 />
                 {item.label}
