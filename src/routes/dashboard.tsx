@@ -211,11 +211,21 @@ const DEFAULT_PROFILE: Profile = {
 };
 
 function DashboardPage() {
+  return (
+    <TxProvider>
+      <DashboardInner />
+    </TxProvider>
+  );
+}
+
+function DashboardInner() {
   const { user, ready, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const { add } = useTx();
   const [active, setActive] = useState<View>("overview");
   const [modal, setModal] = useState<null | "deposit" | "withdraw">(null);
   const [amount, setAmount] = useState("");
+  const [copied, setCopied] = useState(false);
 
   if (!ready) {
     return (
@@ -231,13 +241,65 @@ function DashboardPage() {
     navigate({ to: "/", replace: true });
   };
 
-  const confirmModal = () => {
-    const label = modal === "deposit" ? "Deposit" : "Withdrawal";
-    toast.success(`${label} of $${amount || "0"} submitted`, {
-      description: "This is a demo — no funds were moved.",
-    });
+  const closeModal = () => {
     setModal(null);
     setAmount("");
+    setCopied(false);
+  };
+
+  const confirmDeposit = () => {
+    const value = parseFloat(amount);
+    if (!value || value <= 0) {
+      toast.error("Enter a valid amount");
+      return;
+    }
+    add({
+      name: "Bitcoin Deposit",
+      category: "Deposit · BTC",
+      date: formatTodayLabel(),
+      amount: value,
+      status: "Pending",
+    });
+    toast.success(`Deposit of $${value.toFixed(2)} submitted`, {
+      description: "Awaiting network confirmation.",
+    });
+    closeModal();
+    setActive("transactions");
+  };
+
+  const confirmWithdraw = () => {
+    const value = parseFloat(amount);
+    if (!value || value <= 0) {
+      toast.error("Enter a valid amount");
+      return;
+    }
+    add({
+      name: "Withdrawal",
+      category: "Withdrawal",
+      date: formatTodayLabel(),
+      amount: -value,
+      status: "Pending",
+    });
+    toast.success(`Withdrawal of $${value.toFixed(2)} submitted`, {
+      description: "This is a demo — no funds were moved.",
+    });
+    closeModal();
+    setActive("transactions");
+  };
+
+  const copyAddress = async () => {
+    if (!BTC_WALLET_ADDRESS) {
+      toast.error("No wallet address configured yet");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(BTC_WALLET_ADDRESS);
+      setCopied(true);
+      toast.success("Wallet address copied");
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      toast.error("Couldn't copy address");
+    }
   };
 
   return (
