@@ -690,12 +690,13 @@ function TransactionList({ items }: { items: Transaction[] }) {
 /* ---------------------------- Transactions ---------------------------- */
 
 function TransactionsView() {
+  const { items: allItems } = useTx();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "credits" | "debits">("all");
   const [status, setStatus] = useState<"all" | "Completed" | "Pending">("all");
 
   const items = useMemo(() => {
-    return TRANSACTIONS.filter((t) => {
+    return allItems.filter((t) => {
       if (filter === "credits" && t.amount <= 0) return false;
       if (filter === "debits" && t.amount > 0) return false;
       if (status !== "all" && t.status !== status) return false;
@@ -707,10 +708,10 @@ function TransactionsView() {
       }
       return true;
     });
-  }, [query, filter, status]);
+  }, [allItems, query, filter, status]);
 
-  const totalIn = TRANSACTIONS.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-  const totalOut = TRANSACTIONS.filter((t) => t.amount < 0).reduce(
+  const totalIn = allItems.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+  const totalOut = allItems.filter((t) => t.amount < 0).reduce(
     (s, t) => s + Math.abs(t.amount),
     0,
   );
@@ -729,7 +730,7 @@ function TransactionsView() {
       <section className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Total in" value={`+$${totalIn.toFixed(2)}`} tone="positive" />
         <StatCard label="Total out" value={`−$${totalOut.toFixed(2)}`} tone="negative" />
-        <StatCard label="Transactions" value={String(TRANSACTIONS.length)} />
+        <StatCard label="Transactions" value={String(allItems.length)} />
       </section>
 
       <section className="glass-card overflow-hidden rounded-2xl">
