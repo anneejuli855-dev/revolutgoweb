@@ -1,9 +1,11 @@
 import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
+  Bitcoin,
   Camera,
+  Copy,
   CreditCard,
   LayoutGrid,
   LogOut,
@@ -104,6 +106,56 @@ type Card = {
 
 const CARDS_KEY = "novabank.cards.v1";
 const PROFILE_KEY = "novabank.profile.v1";
+const TX_KEY = "novabank.tx.v1";
+
+// TODO: paste your BTC deposit wallet address here.
+const BTC_WALLET_ADDRESS = "";
+
+function formatTodayLabel() {
+  return new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
+
+type TxContextValue = {
+  items: Transaction[];
+  add: (t: Omit<Transaction, "id">) => void;
+};
+const TxContext = createContext<TxContextValue | null>(null);
+
+function TxProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<Transaction[]>(TRANSACTIONS);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(TX_KEY);
+      if (raw) setItems(JSON.parse(raw) as Transaction[]);
+    } catch {
+      // ignore
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    window.localStorage.setItem(TX_KEY, JSON.stringify(items));
+  }, [items, loaded]);
+
+  const add: TxContextValue["add"] = (t) => {
+    setItems((prev) => [{ ...t, id: `tx_${Date.now()}` }, ...prev]);
+  };
+
+  return <TxContext.Provider value={{ items, add }}>{children}</TxContext.Provider>;
+}
+
+function useTx() {
+  const ctx = useContext(TxContext);
+  if (!ctx) throw new Error("useTx must be used inside TxProvider");
+  return ctx;
+}
 
 const DEFAULT_CARDS: Card[] = [
   {
@@ -159,11 +211,21 @@ const DEFAULT_PROFILE: Profile = {
 };
 
 function DashboardPage() {
+  return (
+    <TxProvider>
+      <DashboardInner />
+    </TxProvider>
+  );
+}
+
+function DashboardInner() {
   const { user, ready, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const { add } = useTx();
   const [active, setActive] = useState<View>("overview");
   const [modal, setModal] = useState<null | "deposit" | "withdraw">(null);
   const [amount, setAmount] = useState("");
+  const [copied, setCopied] = useState(false);
 
   if (!ready) {
     return (
@@ -179,13 +241,65 @@ function DashboardPage() {
     navigate({ to: "/", replace: true });
   };
 
-  const confirmModal = () => {
-    const label = modal === "deposit" ? "Deposit" : "Withdrawal";
-    toast.success(`${label} of $${amount || "0"} submitted`, {
-      description: "This is a demo — no funds were moved.",
-    });
+  const closeModal = () => {
     setModal(null);
     setAmount("");
+    setCopied(false);
+  };
+
+  const confirmDeposit = () => {
+    const value = parseFloat(amount);
+    if (!value || value <= 0) {
+      toast.error("Enter a valid amount");
+      return;
+    }
+    add({
+      name: "Bitcoin Deposit",
+      category: "Deposit · BTC",
+      date: formatTodayLabel(),
+      amount: value,
+      status: "Pending",
+    });
+    toast.success(`Deposit of $${value.toFixed(2)} submitted`, {
+      description: "Awaiting network confirmation.",
+    });
+    closeModal();
+    setActive("transactions");
+  };
+
+  const confirmWithdraw = () => {
+    const value = parseFloat(amount);
+    if (!value || value <= 0) {
+      toast.error("Enter a valid amount");
+      return;
+    }
+    add({
+      name: "Withdrawal",
+      category: "Withdrawal",
+      date: formatTodayLabel(),
+      amount: -value,
+      status: "Pending",
+    });
+    toast.success(`Withdrawal of $${value.toFixed(2)} submitted`, {
+      description: "This is a demo — no funds were moved.",
+    });
+    closeModal();
+    setActive("transactions");
+  };
+
+  const copyAddress = async () => {
+    if (!BTC_WALLET_ADDRESS) {
+      toast.error("No wallet address configured yet");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(BTC_WALLET_ADDRESS);
+      setCopied(true);
+      toast.success("Wallet address copied");
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      toast.error("Couldn't copy address");
+    }
   };
 
   return (
@@ -285,47 +399,117 @@ function DashboardPage() {
       </nav>
 
       {/* Deposit / Withdraw modal */}
-      <Dialog open={modal !== null} onOpenChange={(open) => !open && setModal(null)}>
-        <DialogContent className="rounded-2xl border-white/10 bg-[#111729] text-foreground sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
-              {modal === "deposit" ? "Deposit funds" : "Withdraw funds"}
-            </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              {modal === "deposit"
-                ? "Add money to your checking account."
-                : "Move money out of your checking account."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-2 py-2">
-            <Label htmlFor="amount">Amount (USD)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                $
-              </span>
-              <Input
-                id="amount"
-                type="number"
-                inputMode="decimal"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="h-12 rounded-xl border-white/10 bg-white/5 pl-7 text-lg font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-primary/60"
-                autoFocus
-              />
-            </div>
-          </div>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => setModal(null)} className="hover:bg-white/5">
-              Cancel
-            </Button>
-            <Button
-              onClick={confirmModal}
-              className="rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
-            >
-              Confirm {modal === "deposit" ? "Deposit" : "Withdrawal"}
-            </Button>
-          </DialogFooter>
+      <Dialog open={modal !== null} onOpenChange={(open) => !open && closeModal()}>
+        <DialogContent className="rounded-2xl border-white/10 bg-[#111111] text-foreground sm:max-w-md">
+          {modal === "deposit" ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+                  <Bitcoin className="h-5 w-5" />
+                  Deposit Bitcoin
+                </DialogTitle>
+                <DialogDescription className="text-muted-foreground">
+                  Send BTC to the wallet address below. Funds will appear once the transfer confirms on the network.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label>BTC wallet address</Label>
+                  <div className="flex items-stretch gap-2 rounded-xl border border-white/10 bg-white/5 p-2">
+                    <div className="flex-1 truncate px-2 py-2 font-mono text-sm text-foreground">
+                      {BTC_WALLET_ADDRESS || (
+                        <span className="text-muted-foreground">
+                          Wallet address not set yet
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={copyAddress}
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0 rounded-lg hover:bg-white/10"
+                    >
+                      <Copy className="mr-1.5 h-3.5 w-3.5" />
+                      {copied ? "Copied" : "Copy"}
+                    </Button>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Only send BTC to this address. Sending other assets may result in loss of funds.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="amount">Amount (USD equivalent)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                      $
+                    </span>
+                    <Input
+                      id="amount"
+                      type="number"
+                      inputMode="decimal"
+                      placeholder="0.00"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className="h-12 rounded-xl border-white/10 bg-white/5 pl-7 text-lg font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-primary/60"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-2">
+                <Button variant="ghost" onClick={closeModal} className="hover:bg-white/5">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={confirmDeposit}
+                  className="rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  I've sent the BTC
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold">Withdraw funds</DialogTitle>
+                <DialogDescription className="text-muted-foreground">
+                  Move money out of your checking account.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2 py-2">
+                <Label htmlFor="amount">Amount (USD)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    $
+                  </span>
+                  <Input
+                    id="amount"
+                    type="number"
+                    inputMode="decimal"
+                    placeholder="0.00"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="h-12 rounded-xl border-white/10 bg-white/5 pl-7 text-lg font-semibold tabular-nums focus-visible:ring-2 focus-visible:ring-primary/60"
+                    autoFocus
+                  />
+                </div>
+              </div>
+              <DialogFooter className="gap-2 sm:gap-2">
+                <Button variant="ghost" onClick={closeModal} className="hover:bg-white/5">
+                  Cancel
+                </Button>
+                <Button
+                  onClick={confirmWithdraw}
+                  className="rounded-full bg-primary px-6 font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  Confirm Withdrawal
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
@@ -345,7 +529,8 @@ function OverviewView({
   onWithdraw: () => void;
   onViewAll: () => void;
 }) {
-  const recent = TRANSACTIONS.slice(0, 6);
+  const { items } = useTx();
+  const recent = items.slice(0, 6);
   return (
     <>
       <section>
@@ -375,9 +560,9 @@ function OverviewView({
           <div className="mt-6 flex flex-wrap gap-3">
             <Button
               onClick={onDeposit}
-              className="h-11 rounded-full bg-white px-6 font-semibold text-primary hover:bg-white/90"
+              className="h-11 rounded-full bg-white px-6 font-semibold text-black hover:bg-white/90"
             >
-              <ArrowDownLeft className="mr-1.5 h-4 w-4" />
+              <ArrowDownLeft className="mr-1.5 h-4 w-4 text-black" />
               Deposit
             </Button>
             <Button
@@ -505,12 +690,13 @@ function TransactionList({ items }: { items: Transaction[] }) {
 /* ---------------------------- Transactions ---------------------------- */
 
 function TransactionsView() {
+  const { items: allItems } = useTx();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "credits" | "debits">("all");
   const [status, setStatus] = useState<"all" | "Completed" | "Pending">("all");
 
   const items = useMemo(() => {
-    return TRANSACTIONS.filter((t) => {
+    return allItems.filter((t) => {
       if (filter === "credits" && t.amount <= 0) return false;
       if (filter === "debits" && t.amount > 0) return false;
       if (status !== "all" && t.status !== status) return false;
@@ -522,10 +708,10 @@ function TransactionsView() {
       }
       return true;
     });
-  }, [query, filter, status]);
+  }, [allItems, query, filter, status]);
 
-  const totalIn = TRANSACTIONS.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
-  const totalOut = TRANSACTIONS.filter((t) => t.amount < 0).reduce(
+  const totalIn = allItems.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+  const totalOut = allItems.filter((t) => t.amount < 0).reduce(
     (s, t) => s + Math.abs(t.amount),
     0,
   );
@@ -544,7 +730,7 @@ function TransactionsView() {
       <section className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Total in" value={`+$${totalIn.toFixed(2)}`} tone="positive" />
         <StatCard label="Total out" value={`−$${totalOut.toFixed(2)}`} tone="negative" />
-        <StatCard label="Transactions" value={String(TRANSACTIONS.length)} />
+        <StatCard label="Transactions" value={String(allItems.length)} />
       </section>
 
       <section className="glass-card overflow-hidden rounded-2xl">
