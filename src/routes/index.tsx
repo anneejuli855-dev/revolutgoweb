@@ -10,8 +10,8 @@ import { DEMO_CREDENTIALS, useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sign in — NovaBank" },
-      { name: "description", content: "Sign in to your NovaBank account." },
+      { title: "Sign in — Revolut Go" },
+      { name: "description", content: "Sign in to your Revolut Go account." },
     ],
   }),
   component: LoginPage,
@@ -69,7 +69,7 @@ function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@novabank.com"
+                placeholder="you@revolutgo.com"
                 className="h-11 rounded-xl border-white/10 bg-white/5 text-foreground placeholder:text-muted-foreground/60 focus-visible:ring-2 focus-visible:ring-primary/60"
                 required
               />
@@ -131,7 +131,7 @@ function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} NovaBank. All rights reserved.
+          © {new Date().getFullYear()} Revolut Go. All rights reserved.
         </p>
       </div>
     </main>

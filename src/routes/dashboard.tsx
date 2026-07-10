@@ -47,8 +47,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — NovaBank" },
-      { name: "description", content: "Your NovaBank account overview." },
+      { title: "Dashboard — Revolut Go" },
+      { name: "description", content: "Your Revolut Go account overview." },
     ],
   }),
   component: DashboardPage,
@@ -145,7 +145,7 @@ type Profile = {
 
 const DEFAULT_PROFILE: Profile = {
   fullName: "Alex Carter",
-  email: "admin@novabank.com",
+  email: "admin@revolutgo.com",
   phone: "(415) 555-0142",
   country: "United States",
   address: "742 Market Street",
@@ -191,7 +191,7 @@ function DashboardPage() {
   return (
     <div className="min-h-screen">
       {/* Top nav */}
-      <header className="sticky top-0 z-30 border-b border-white/5 bg-[#0A0F1E]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <NovaLogo />
           <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ function DashboardPage() {
       </div>
 
       {/* Bottom nav (mobile) */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/5 bg-[#0A0F1E]/90 backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/5 bg-[#0A0A0A]/90 backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-md items-center justify-around px-2 py-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -537,7 +537,7 @@ function TransactionsView() {
           Transactions
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Every movement across your NovaBank accounts.
+          Every movement across your Revolut Go accounts.
         </p>
       </section>
 
@@ -709,7 +709,7 @@ function CardsView({ holderDefault }: { holderDefault: string }) {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Cards</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Manage your virtual and physical NovaBank cards.
+            Manage your virtual and physical Revolut Go cards.
           </p>
         </div>
         <Button
@@ -964,7 +964,7 @@ function SettingsView({ initials }: { initials: string }) {
                 </div>
                 <button
                   type="button"
-                  className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-[#0A0F1E] transition hover:bg-primary/90"
+                  className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-[#0A0A0A] transition hover:bg-primary/90"
                   aria-label="Upload avatar"
                 >
                   <Camera className="h-3.5 w-3.5" />
