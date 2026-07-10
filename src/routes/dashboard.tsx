@@ -1,9 +1,11 @@
 import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
+  Bitcoin,
   Camera,
+  Copy,
   CreditCard,
   LayoutGrid,
   LogOut,
