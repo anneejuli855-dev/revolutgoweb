@@ -15,8 +15,8 @@ type AuthContextValue = {
 };
 
 const STORAGE_KEY = "novabank.auth.v1";
-const DEMO_EMAIL = "admin@novabank.com";
-const DEMO_PASSWORD = "NovaBank2025";
+const DEMO_EMAIL = "admin@revolutgo.com";
+const DEMO_PASSWORD = "Revolut Go2025";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
