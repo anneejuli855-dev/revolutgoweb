@@ -76,7 +76,7 @@ type Transaction = {
 
 const TRANSACTIONS: Transaction[] = [
   { id: "t1", name: "Netflix Subscription", category: "Entertainment", date: "Jun 24, 2026", amount: -15.99, status: "Completed" },
-  { id: "t2", name: "Wire Transfer — John Doe", category: "Transfer", date: "Jun 23, 2026", amount: -1250.0, status: "Completed" },
+  { id: "t2", name: "Wire Transfer — Walter Reeves", category: "Transfer", date: "Jun 23, 2026", amount: -1250.0, status: "Completed" },
   { id: "t3", name: "Payroll — Acme Corp", category: "Income", date: "Jun 21, 2026", amount: 4820.0, status: "Completed" },
   { id: "t4", name: "Apple Store", category: "Shopping", date: "Jun 20, 2026", amount: -249.0, status: "Pending" },
   { id: "t5", name: "Refund — Amazon", category: "Refund", date: "Jun 18, 2026", amount: 56.32, status: "Completed" },
@@ -161,7 +161,7 @@ const DEFAULT_CARDS: Card[] = [
   {
     id: "c1",
     label: "Everyday",
-    holder: "ALEX CARTER",
+    holder: "JULIE ANNEE",
     number: "4485 8231 9217 4821",
     expiry: "08/29",
     type: "Physical",
@@ -171,7 +171,7 @@ const DEFAULT_CARDS: Card[] = [
   {
     id: "c2",
     label: "Subscriptions",
-    holder: "ALEX CARTER",
+    holder: "JULIE ANNEE",
     number: "5364 1129 8745 1102",
     expiry: "02/28",
     type: "Virtual",
@@ -196,8 +196,8 @@ type Profile = {
 };
 
 const DEFAULT_PROFILE: Profile = {
-  fullName: "Alex Carter",
-  email: "admin@revolutgo.com",
+  fullName: "Julie Annee",
+  email: "Julieanneee10@mail.com",
   phone: "(415) 555-0142",
   country: "United States",
   address: "742 Market Street",
@@ -365,7 +365,7 @@ function DashboardInner() {
             />
           )}
           {active === "transactions" && <TransactionsView />}
-          {active === "cards" && <CardsView holderDefault={user?.name ?? "Alex Carter"} />}
+          {active === "cards" && <CardsView holderDefault={user?.name ?? "Julie Annee"} />}
           {active === "settings" && <SettingsView initials={user?.initials ?? "AC"} />}
         </main>
       </div>
@@ -578,9 +578,9 @@ function OverviewView({
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <BalanceCard icon={PiggyBank} label="Savings Account" value="$8,200.00" />
-        <BalanceCard icon={Wallet} label="USD Wallet" value="$3,450.75" />
-        <BalanceCard icon={TrendingUp} label="Investments" value="$12,000.00" />
+        <BalanceCard icon={PiggyBank} label="Savings Account" value="$800,000.00" />
+        <BalanceCard icon={Wallet} label="USD Wallet" value="$500,000.00" />
+        <BalanceCard icon={TrendingUp} label="Investments" value="$1,000,000.00" />
       </section>
 
       <section className="glass-card overflow-hidden rounded-2xl">
