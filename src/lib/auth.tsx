@@ -15,7 +15,7 @@ type AuthContextValue = {
 };
 
 const STORAGE_KEY = "revolutgo.auth.v2";
-const DEMO_EMAIL = "Julieanneee10@mail.com";
+const DEMO_EMAIL = "Julianneee10@mail.com";
 const DEMO_PASSWORD = "Julieannee@2026";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (email.trim().toLowerCase() !== DEMO_EMAIL.toLowerCase() || password !== DEMO_PASSWORD) {
       return { ok: false, error: "Invalid email or password." };
     }
-    const next: User = { name: "Julie Annee", email: DEMO_EMAIL, initials: "JA" };
+    const next: User = { name: "Juli Annee", email: DEMO_EMAIL, initials: "JA" };
     setUser(next);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     return { ok: true };
