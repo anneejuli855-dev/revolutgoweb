@@ -15,8 +15,8 @@ type AuthContextValue = {
 };
 
 const STORAGE_KEY = "novabank.auth.v1";
-const DEMO_EMAIL = "admin@revolutgo.com";
-const DEMO_PASSWORD = "Revolut Go2025";
+const DEMO_EMAIL = "Julieanneee10@mail.com";
+const DEMO_PASSWORD = "Julieannee@2026";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -35,10 +35,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login: AuthContextValue["login"] = (email, password) => {
-    if (email.trim().toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
+    if (email.trim().toLowerCase() !== DEMO_EMAIL.toLowerCase() || password !== DEMO_PASSWORD) {
       return { ok: false, error: "Invalid email or password." };
     }
-    const next: User = { name: "Alex Carter", email: DEMO_EMAIL, initials: "AC" };
+    const next: User = { name: "Julie Annee", email: DEMO_EMAIL, initials: "JA" };
     setUser(next);
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     return { ok: true };
