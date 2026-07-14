@@ -14,7 +14,7 @@ type AuthContextValue = {
   logout: () => void;
 };
 
-const STORAGE_KEY = "novabank.auth.v1";
+const STORAGE_KEY = "revolutgo.auth.v2";
 const DEMO_EMAIL = "Julieanneee10@mail.com";
 const DEMO_PASSWORD = "Julieannee@2026";
 

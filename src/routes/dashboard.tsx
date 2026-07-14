@@ -104,9 +104,9 @@ type Card = {
   frozen: boolean;
 };
 
-const CARDS_KEY = "novabank.cards.v1";
-const PROFILE_KEY = "novabank.profile.v1";
-const TX_KEY = "novabank.tx.v1";
+const CARDS_KEY = "revolutgo.cards.v2";
+const PROFILE_KEY = "revolutgo.profile.v2";
+const TX_KEY = "revolutgo.tx.v2";
 
 // TODO: paste your BTC deposit wallet address here.
 const BTC_WALLET_ADDRESS = "";
