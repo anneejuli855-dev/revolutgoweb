@@ -122,12 +122,6 @@ function LoginPage() {
             </div>
           </form>
 
-          <div className="mt-8 rounded-xl border border-white/5 bg-white/[0.02] p-3 text-center text-xs text-muted-foreground">
-            <span className="font-medium text-foreground/80">Demo credentials</span>
-            <div className="mt-1 font-mono text-[11px]">
-              {DEMO_CREDENTIALS.email} / {DEMO_CREDENTIALS.password}
-            </div>
-          </div>
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
