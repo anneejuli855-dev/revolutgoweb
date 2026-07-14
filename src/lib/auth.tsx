@@ -16,7 +16,7 @@ type AuthContextValue = {
 
 const STORAGE_KEY = "revolutgo.auth.v2";
 const DEMO_EMAIL = "Julianneee10@mail.com";
-const DEMO_PASSWORD = "Julieannee@2026";
+const DEMO_PASSWORD = "Juliannee@2026";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
