@@ -278,11 +278,9 @@ function DashboardInner() {
       category: "Withdrawal",
       date: formatTodayLabel(),
       amount: -value,
-      status: "Pending",
+      status: "Completed",
     });
-    toast.success(`Withdrawal of $${value.toFixed(2)} submitted`, {
-      description: "This is a demo — no funds were moved.",
-    });
+    toast.success(`Withdrawal of $${value.toFixed(2)} completed`);
     closeModal();
     setActive("transactions");
   };
