@@ -196,8 +196,8 @@ type Profile = {
 };
 
 const DEFAULT_PROFILE: Profile = {
-  fullName: "Juli Annee",
-  email: "Julianneee10@mail.com",
+  fullName: "Julie Annee",
+  email: "Julieanneee10@mail.com",
   phone: "(415) 555-0142",
   country: "United States",
   address: "742 Market Street",
@@ -363,7 +363,7 @@ function DashboardInner() {
             />
           )}
           {active === "transactions" && <TransactionsView />}
-          {active === "cards" && <CardsView holderDefault={user?.name ?? "Juli Annee"} />}
+          {active === "cards" && <CardsView holderDefault={user?.name ?? "Julie Annee"} />}
           {active === "settings" && <SettingsView initials={user?.initials ?? "AC"} />}
         </main>
       </div>
