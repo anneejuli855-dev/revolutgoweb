@@ -104,8 +104,8 @@ type Card = {
   frozen: boolean;
 };
 
-const CARDS_KEY = "revolutgo.cards.v2";
-const PROFILE_KEY = "revolutgo.profile.v2";
+const CARDS_KEY = "revolutgo.cards.v3";
+const PROFILE_KEY = "revolutgo.profile.v3";
 const TX_KEY = "revolutgo.tx.v2";
 
 // TODO: paste your BTC deposit wallet address here.
@@ -161,7 +161,7 @@ const DEFAULT_CARDS: Card[] = [
   {
     id: "c1",
     label: "Everyday",
-    holder: "JULIE ANNEE",
+    holder: "JULI ANNE",
     number: "4485 8231 9217 4821",
     expiry: "08/29",
     type: "Physical",
@@ -171,7 +171,7 @@ const DEFAULT_CARDS: Card[] = [
   {
     id: "c2",
     label: "Subscriptions",
-    holder: "JULIE ANNEE",
+    holder: "JULI ANNE",
     number: "5364 1129 8745 1102",
     expiry: "02/28",
     type: "Virtual",
@@ -196,7 +196,7 @@ type Profile = {
 };
 
 const DEFAULT_PROFILE: Profile = {
-  fullName: "Julie Annee",
+  fullName: "Juli Anne",
   email: "Julieanneee10@mail.com",
   phone: "(415) 555-0142",
   country: "United States",
@@ -363,7 +363,7 @@ function DashboardInner() {
             />
           )}
           {active === "transactions" && <TransactionsView />}
-          {active === "cards" && <CardsView holderDefault={user?.name ?? "Julie Annee"} />}
+          {active === "cards" && <CardsView holderDefault={user?.name ?? "Juli Anne"} />}
           {active === "settings" && <SettingsView initials={user?.initials ?? "AC"} />}
         </main>
       </div>
