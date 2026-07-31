@@ -548,7 +548,7 @@ function OverviewView({
             Total USD Balance
           </p>
           <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            $2,300,000.00
+            $1,300,000.00
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-white/70">
             <span className="font-mono tracking-wider">•••• •••• 4821</span>
@@ -576,9 +576,9 @@ function OverviewView({
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <BalanceCard icon={PiggyBank} label="Savings Account" value="$800,000.00" />
-        <BalanceCard icon={Wallet} label="USD Wallet" value="$500,000.00" />
-        <BalanceCard icon={TrendingUp} label="Investments" value="$1,000,000.00" />
+        <BalanceCard icon={PiggyBank} label="Savings Account" value="$450,000.00" />
+        <BalanceCard icon={Wallet} label="USD Wallet" value="$250,000.00" />
+        <BalanceCard icon={TrendingUp} label="Investments" value="$600,000.00" />
       </section>
 
       <section className="glass-card overflow-hidden rounded-2xl">
